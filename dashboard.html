@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retail Sales Dashboard | Mohamed Basel Elsonbaty</title>
+<meta name="description" content="Interactive retail sales dashboard on synthetic data: sales vs last year, like-for-like, target achievement, margin and returns by branch, area and category.">
+<meta property="og:title" content="Retail Sales Dashboard | Mohamed Basel Elsonbaty">
+<meta property="og:description" content="Interactive retail dashboard on synthetic data: vs LY, like-for-like, target achievement, margin and returns.">
+<meta property="og:image" content="https://mohamed-elsonbaty.github.io/og-v2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #fbfbfa; --surface: #ffffff; --text: #16181d; --muted: #5b616e;
+  --line: #e4e5e8; --accent: #2458d6; --accent-soft: #e8eefc;
+  --good: #1f8a5b; --warn: #b7791f; --bad: #c53030; --ly: #9aa1ae;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1115; --surface: #171a20; --text: #eceef2; --muted: #9aa1ae;
+    --line: #2a2e37; --accent: #7aa2ff; --accent-soft: #1c2640;
+    --good: #4cc38a; --warn: #e3b341; --bad: #f47067; --ly: #5b616e;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1115; --surface: #171a20; --text: #eceef2; --muted: #9aa1ae;
+  --line: #2a2e37; --accent: #7aa2ff; --accent-soft: #1c2640;
+  --good: #4cc38a; --warn: #e3b341; --bad: #f47067; --ly: #5b616e;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+nav { border-bottom: 1px solid var(--line); background: var(--bg); }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 12px; }
+nav .brand { font-weight: 700; color: var(--text); }
+header { padding: 28px 0 8px; }
+h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+.sub { color: var(--muted); margin: 0; }
+.badge { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-left: 8px; vertical-align: middle; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.filters label { display: flex; flex-direction: column; font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; gap: 4px; }
+select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); min-width: 130px; }
+
+.kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 16px; }
+@media (max-width: 1000px) { .kpis { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.kpi .label { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+.kpi .value { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.kpi .hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.pos { color: var(--good); } .neg { color: var(--bad); } .mid { color: var(--warn); }
+
+.grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid.two { grid-template-columns: 1fr 1fr; }
+@media (max-width: 900px) { .grid, .grid.two { grid-template-columns: 1fr; } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
+.panel h2 { font-size: 15px; margin: 0 0 2px; }
+.panel .note { font-size: 12.5px; color: var(--muted); margin: 0 0 10px; }
+.chart { position: relative; height: 280px; }
+
+.table-scroll { overflow-x: auto; max-height: 520px; overflow-y: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
+th { position: sticky; top: 0; background: var(--surface); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; cursor: pointer; user-select: none; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.bar-cell { display: inline-block; height: 6px; border-radius: 3px; background: var(--accent); opacity: .6; vertical-align: middle; margin-left: 8px; }
+.tag-new { font-size: 11px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 1px 7px; border-radius: 999px; margin-left: 6px; }
+footer { color: var(--muted); font-size: 13px; padding: 16px 0 48px; }
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html">Mohamed Basel Elsonbaty</a>
+    <a href="index.html#work">Case studies</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header>
+    <h1>Retail Sales Dashboard <span class="badge">Synthetic data</span></h1>
+    <p class="sub">A demo of the KPIs I build at work, on an invented chain of 26 branches and an online store. Every name and number here is made up.</p>
+  </header>
+
+  <div class="filters">
+    <label>Year <select id="f-year"></select></label>
+    <label>Through <select id="f-month"></select></label>
+    <label>Area <select id="f-area"></select></label>
+    <label>Channel <select id="f-channel"><option value="">All</option><option>POS</option><option>Online</option></select></label>
+    <label>Category <select id="f-cat"></select></label>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Net sales by month vs last year</h2>
+      <p class="note" id="trend-note"></p>
+      <div class="chart"><canvas id="c-trend"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>Sales by area</h2>
+      <p class="note">Year to date, with change vs last year</p>
+      <div class="chart"><canvas id="c-area"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid two">
+    <div class="panel">
+      <h2>Category mix and margin</h2>
+      <p class="note">Net sales (bars) and gross margin % (dots)</p>
+      <div class="chart"><canvas id="c-cat"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>Return rate by category</h2>
+      <p class="note">Returned value as a share of gross sales</p>
+      <div class="chart"><canvas id="c-ret"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Branch achievement: who needs attention first</h2>
+    <p class="note" id="table-note">Sorted by target achievement, lowest first. Red below 80%, amber 80–90%, green 90% and above. Click a column to sort.</p>
+    <div class="table-scroll"><table id="t-branch"></table></div>
+  </div>
+
+  <footer>
+    Built with plain JavaScript and Chart.js from a Python-generated dataset (585K sales lines). The same measures (vs LY, like-for-like, target achievement, return rate) are in the Power BI version of this report.
+    <br><a href="index.html">Back to the portfolio</a>
+  </footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmtSAR = v => {
+  const a = Math.abs(v);
+  const s = a >= 1e6 ? (a / 1e6).toFixed(1) + 'M' : a >= 1e3 ? (a / 1e3).toFixed(0) + 'K' : a.toFixed(0);
+  return (v < 0 ? '-' : '') + 'SAR ' + s;
+};
+const pct = (v, d = 1) => v == null || !isFinite(v) ? '—' : (v * 100).toFixed(d) + '%';
+const chg = v => v == null || !isFinite(v) ? '—' : (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + '%';
+const cls = v => v == null || !isFinite(v) ? '' : v >= 0 ? 'pos' : 'neg';
+const achCls = a => a == null ? '' : a < 0.8 ? 'neg' : a < 0.9 ? 'mid' : 'pos';
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+let D, B, charts = {}, sortKey = 'ach', sortAsc = true;
+Chart.defaults.font.family = 'Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+
+fetch('dashboard-data.json').then(r => r.json()).then(data => {
+  D = data;
+  B = Object.fromEntries(D.branches.map(b => [b.id, b]));
+  D.monthIdx = Object.fromEntries(D.months.map((m, i) => [m, i]));
+  D.tgt = {};
+  for (const [m, b, t] of D.targets) D.tgt[m + '|' + b] = t;
+  const years = [...new Set(D.months.map(m => +m.slice(0, 4)))].filter(y => D.months.includes((y - 1) + '-01'));
+  $('f-year').innerHTML = years.map(y => `<option>${y}</option>`).join('');
+  $('f-year').value = years.at(-1);
+  const areas = [...new Set(D.branches.map(b => b.area))];
+  $('f-area').innerHTML = '<option value="">All</option>' + areas.map(a => `<option>${a}</option>`).join('');
+  $('f-cat').innerHTML = '<option value="">All</option>' + D.categories.map((c, i) => `<option value="${i}">${c}</option>`).join('');
+  fillMonths();
+  $('f-year').onchange = () => { fillMonths(); render(); };
+  for (const id of ['f-month', 'f-area', 'f-channel', 'f-cat']) $(id).onchange = render;
+  render();
+});
+
+function fillMonths() {
+  const y = $('f-year').value;
+  const avail = D.months.filter(m => m.startsWith(y)).map(m => +m.slice(5));
+  $('f-month').innerHTML = avail.map(m => `<option value="${m}">${MONTHS[m - 1]}</option>`).join('');
+  $('f-month').value = avail.at(-1);
+}
+
+function render() {
+  const year = +$('f-year').value, thru = +$('f-month').value;
+  const area = $('f-area').value, channel = $('f-channel').value, cat = $('f-cat').value;
+  const catIdx = cat === '' ? null : +cat;
+  const keep = b => (!area || B[b].area === area) && (!channel || B[b].channel === channel);
+  const lflCut = (year - 1) + '-01-01';
+
+  // one pass over the fact table
+  const cy = { s: 0, c: 0, gross: 0, ret: 0 }, ly = { s: 0 }, lfl = { cy: 0, ly: 0 };
+  const byMonth = { cy: Array(12).fill(0), ly: Array(12).fill(0) };
+  const byArea = {}, byCat = D.categories.map(() => ({ s: 0, c: 0, gross: 0, ret: 0 }));
+  const byBranch = {};
+  for (const [mi, b, ci, refund, s, c] of D.fact) {
+    if (!keep(b) || (catIdx !== null && ci !== catIdx)) continue;
+    const m = D.months[mi], y = +m.slice(0, 4), mo = +m.slice(5);
+    if (y === year || y === year - 1) {
+      if (y === year) byMonth.cy[mo - 1] += s; else byMonth.ly[mo - 1] += s;
+    }
+    if (mo > thru) continue;
+    const isLFL = B[b].open <= lflCut;
+    if (y === year) {
+      cy.s += s; cy.c += c;
+      if (refund) cy.ret -= s; else cy.gross += s;
+      if (isLFL) lfl.cy += s;
+      const a = (byArea[B[b].area] ??= { cy: 0, ly: 0 }); a.cy += s;
+      const k = byCat[ci]; k.s += s; k.c += c; if (refund) k.ret -= s; else k.gross += s;
+      const r = (byBranch[b] ??= { cy: 0, ly: 0, tgt: 0 }); r.cy += s;
+    } else if (y === year - 1) {
+      ly.s += s;
+      if (isLFL) lfl.ly += s;
+      const a = (byArea[B[b].area] ??= { cy: 0, ly: 0 }); a.ly += s;
+      const r = (byBranch[b] ??= { cy: 0, ly: 0, tgt: 0 }); r.ly += s;
+    }
+  }
+  // targets are set per branch and month, so they only apply without a category filter
+  let tgt = 0;
+  if (catIdx === null) {
+    for (const b of Object.keys(byBranch)) {
+      for (let mo = 1; mo <= thru; mo++) {
+        const t = D.tgt[`${year}-${String(mo).padStart(2, '0')}|${b}`] || 0;
+        byBranch[b].tgt += t; tgt += t;
+      }
+    }
+  }
+
+  const range = thru === 1 ? `Jan ${year}` : `Jan–${MONTHS[thru - 1]} ${year}`;
+  const k = [
+    ['Net sales', fmtSAR(cy.s), range],
+    ['vs last year', `<span class="${cls(cy.s / ly.s - 1)}">${chg(cy.s / ly.s - 1)}</span>`, 'same months last year'],
+    ['Like-for-like', `<span class="${cls(lfl.cy / lfl.ly - 1)}">${chg(lfl.cy / lfl.ly - 1)}</span>`, 'branches open all of last year'],
+    ['Target achievement', catIdx === null ? `<span class="${achCls(cy.s / tgt)}">${pct(cy.s / tgt)}</span>` : '—', catIdx === null ? 'of ' + fmtSAR(tgt) : 'targets are per branch, not category'],
+    ['Gross margin', pct(1 - cy.c / cy.s), fmtSAR(cy.s - cy.c) + ' profit'],
+    ['Return rate', pct(cy.ret / cy.gross, 2), fmtSAR(cy.ret) + ' returned'],
+  ];
+  $('kpis').innerHTML = k.map(([l, v, h]) => `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="hint">${h}</div></div>`).join('');
+
+  drawTrend(year, thru, byMonth);
+  drawArea(byArea);
+  drawCat(byCat);
+  drawTable(byBranch, catIdx === null);
+}
+
+function base() {
+  return {
+    responsive: true, maintainAspectRatio: false, animation: false,
+    plugins: { legend: { labels: { color: css('--muted'), boxWidth: 12 } },
+               tooltip: { callbacks: {} } },
+    scales: {
+      x: { ticks: { color: css('--muted') }, grid: { display: false }, border: { color: css('--line') } },
+      y: { ticks: { color: css('--muted'), callback: v => fmtSAR(v).replace('SAR ', '') }, grid: { color: css('--line') }, border: { display: false } },
+    },
+  };
+}
+function chart(id, cfg) { charts[id]?.destroy(); charts[id] = new Chart($(id), cfg); }
+
+function drawTrend(year, thru, bm) {
+  const n = Math.max(thru, bm.cy.findLastIndex(v => v !== 0) + 1);
+  const labels = MONTHS.slice(0, 12);
+  const o = base();
+  o.plugins.tooltip.callbacks.label = c => `${c.dataset.label}: ${fmtSAR(c.raw)}`;
+  chart('c-trend', { data: { labels, datasets: [
+    { type: 'bar', label: String(year), data: bm.cy.map((v, i) => i < n ? v : null), backgroundColor: bm.cy.map((_, i) => i < thru ? css('--accent') : css('--accent-soft')), borderRadius: 4, order: 2 },
+    { type: 'line', label: String(year - 1), data: bm.ly, borderColor: css('--ly'), backgroundColor: css('--ly'), borderWidth: 2, pointRadius: 3, tension: .25, order: 1 },
+  ] }, options: o });
+  $('trend-note').textContent = `Darker bars are inside the selected period. Ramadan moves about 11 days earlier each year, so single months swing more than the year to date.`;
+}
+
+function drawArea(byArea) {
+  const rows = Object.entries(byArea).filter(([, v]) => v.cy).sort((a, b) => b[1].cy - a[1].cy);
+  const o = base();
+  o.indexAxis = 'y';
+  o.plugins.legend.display = false;
+  o.scales.x.ticks.callback = v => fmtSAR(v).replace('SAR ', '');
+  o.scales.x.grid = { color: css('--line') };
+  o.scales.y = { ticks: { color: css('--text') }, grid: { display: false }, border: { display: false } };
+  o.plugins.tooltip.callbacks.label = c => { const v = rows[c.dataIndex][1]; return `${fmtSAR(v.cy)} (${chg(v.cy / v.ly - 1)} vs LY)`; };
+  chart('c-area', { type: 'bar', data: {
+    labels: rows.map(([a, v]) => `${a}  ${chg(v.cy / v.ly - 1)}`),
+    datasets: [{ data: rows.map(([, v]) => v.cy), backgroundColor: rows.map(([, v]) => v.cy >= v.ly ? css('--good') : css('--bad')), borderRadius: 4 }],
+  }, options: o });
+}
+
+function drawCat(byCat) {
+  const rows = D.categories.map((c, i) => [c, byCat[i]]).filter(([, v]) => v.s).sort((a, b) => b[1].s - a[1].s);
+  const o = base();
+  o.scales.y2 = { position: 'right', min: 0, max: 0.8, ticks: { color: css('--muted'), callback: v => Math.round(v * 100) + '%' }, grid: { display: false }, border: { display: false } };
+  o.plugins.tooltip.callbacks.label = c => c.datasetIndex === 0 ? `Net sales: ${fmtSAR(c.raw)}` : `Margin: ${pct(c.raw)}`;
+  chart('c-cat', { data: { labels: rows.map(r => r[0]), datasets: [
+    { type: 'bar', label: 'Net sales', data: rows.map(([, v]) => v.s), backgroundColor: css('--accent'), borderRadius: 4, yAxisID: 'y', order: 2 },
+    { type: 'line', label: 'Gross margin %', data: rows.map(([, v]) => 1 - v.c / v.s), showLine: false, pointRadius: 6, pointBackgroundColor: css('--warn'), borderColor: css('--warn'), yAxisID: 'y2', order: 1 },
+  ] }, options: o });
+
+  const r2 = D.categories.map((c, i) => [c, byCat[i]]).filter(([, v]) => v.gross).sort((a, b) => b[1].ret / b[1].gross - a[1].ret / a[1].gross);
+  const o2 = base();
+  o2.plugins.legend.display = false;
+  o2.scales.y.ticks.callback = v => (v * 100).toFixed(1) + '%';
+  o2.plugins.tooltip.callbacks.label = c => `${pct(c.raw, 2)} (${fmtSAR(r2[c.dataIndex][1].ret)} returned)`;
+  chart('c-ret', { type: 'bar', data: { labels: r2.map(r => r[0]), datasets: [
+    { data: r2.map(([, v]) => v.ret / v.gross), backgroundColor: css('--ly'), borderRadius: 4 },
+  ] }, options: o2 });
+}
+
+function drawTable(byBranch, hasTarget) {
+  const rows = Object.entries(byBranch).filter(([, v]) => v.cy).map(([b, v]) => ({
+    b: +b, name: B[b].name, area: B[b].area, cy: v.cy, ly: v.ly, tgt: v.tgt,
+    vly: v.ly ? v.cy / v.ly - 1 : null, ach: hasTarget && v.tgt ? v.cy / v.tgt : null, isNew: !v.ly || v.ly < v.cy * 0.25,
+  }));
+  const key = hasTarget ? sortKey : (sortKey === 'ach' ? 'vly' : sortKey);
+  rows.sort((a, b) => {
+    const x = a[key], y = b[key];
+    if (x == null) return 1; if (y == null) return -1;
+    return (typeof x === 'string' ? x.localeCompare(y) : x - y) * (sortAsc ? 1 : -1);
+  });
+  const max = Math.max(...rows.map(r => r.cy));
+  const cols = [['name', 'Branch'], ['area', 'Area'], ['cy', 'Net sales'], ['vly', 'vs LY'], ['tgt', 'Target'], ['ach', 'Achievement']];
+  const head = '<tr>' + cols.map(([k, l]) => `<th data-k="${k}">${l}${k === key ? (sortAsc ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr>';
+  const body = rows.map(r => `<tr>
+    <td>${r.name}${r.isNew ? '<span class="tag-new">new</span>' : ''}</td>
+    <td>${r.area}</td>
+    <td>${fmtSAR(r.cy)}<span class="bar-cell" style="width:${Math.round(60 * r.cy / max)}px"></span></td>
+    <td class="${cls(r.vly)}">${r.isNew ? '—' : chg(r.vly)}</td>
+    <td>${hasTarget ? fmtSAR(r.tgt) : '—'}</td>
+    <td class="${achCls(r.ach)}">${r.ach == null ? '—' : `<span class="dot" style="background:var(${r.ach < .8 ? '--bad' : r.ach < .9 ? '--warn' : '--good'})"></span>${pct(r.ach)}`}</td>
+  </tr>`).join('');
+  $('t-branch').innerHTML = `<thead>${head}</thead><tbody>${body}</tbody>`;
+  $('t-branch').querySelectorAll('th').forEach(th => th.onclick = () => {
+    const k = th.dataset.k;
+    if (k === sortKey) sortAsc = !sortAsc; else { sortKey = k; sortAsc = ['name', 'area', 'ach', 'vly'].includes(k); }
+    render();
+  });
+  const below = rows.filter(r => r.ach != null && r.ach < 0.8).length;
+  $('table-note').textContent = hasTarget
+    ? `${below} of ${rows.length} branches are below 80% of target. Sorted by achievement, lowest first. Red below 80%, amber 80–90%, green 90% and above. Click a column to sort.`
+    : 'Targets are set per branch, so achievement is hidden while a category is selected. Click a column to sort.';
+}
+
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => D && render());
+</script>
+</body>
+</html>
