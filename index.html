@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mohamed Elsonbaty | Data Analyst</title>
+<meta name="description" content="Data Analyst for a multi-branch retail chain. Power BI, Excel, DAX, KQL and Microsoft Fabric. Case studies in KPI design, cost optimisation, reporting and data quality.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fbfbfa; --surface: #ffffff; --text: #16181d; --muted: #5b616e;
+  --line: #e4e5e8; --accent: #2458d6; --accent-soft: #e8eefc; --good: #1f8a5b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1115; --surface: #171a20; --text: #eceef2; --muted: #9aa1ae;
+    --line: #2a2e37; --accent: #7aa2ff; --accent-soft: #1c2640; --good: #4cc38a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1115; --surface: #171a20; --text: #eceef2; --muted: #9aa1ae;
+  --line: #2a2e37; --accent: #7aa2ff; --accent-soft: #1c2640; --good: #4cc38a;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.6 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+
+/* nav */
+nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+nav .brand { font-weight: 700; color: var(--text); }
+nav ul { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0; font-size: 15px; }
+nav ul a { color: var(--muted); }
+nav ul a:hover { color: var(--text); text-decoration: none; }
+@media (max-width: 640px) { nav ul { display: none; } }
+
+/* hero */
+.hero { padding: 88px 0 56px; }
+.eyebrow { color: var(--accent); font-weight: 600; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; }
+h1 { font-size: clamp(34px, 6vw, 52px); line-height: 1.1; margin: 12px 0 20px; letter-spacing: -0.02em; }
+.lead { font-size: 19px; color: var(--muted); max-width: 680px; margin: 0 0 32px; }
+.btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { display: inline-block; padding: 11px 20px; border-radius: 8px; font-weight: 600; font-size: 15px; border: 1px solid var(--line); color: var(--text); background: var(--surface); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn:hover { text-decoration: none; filter: brightness(1.05); }
+
+/* stats */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 8px 0 72px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.stat b { display: block; font-size: 32px; line-height: 1.1; letter-spacing: -0.02em; }
+.stat span { color: var(--muted); font-size: 14px; }
+@media (max-width: 760px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+section { padding: 16px 0 64px; }
+h2 { font-size: 28px; letter-spacing: -0.01em; margin: 0 0 8px; }
+.sub { color: var(--muted); margin: 0 0 32px; }
+
+/* case cards */
+.cases { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 760px) { .cases { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; color: var(--text); }
+.card:hover { border-color: var(--accent); text-decoration: none; }
+.card .num { color: var(--accent); font-weight: 600; font-size: 14px; }
+.card h3 { margin: 6px 0 10px; font-size: 20px; line-height: 1.3; }
+.card p { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
+.card .result { margin-top: auto; font-weight: 600; font-size: 15px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.tag { font-size: 12.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+/* case detail */
+.case { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 40px; margin-bottom: 24px; scroll-margin-top: 80px; }
+@media (max-width: 640px) { .case { padding: 24px 20px; } }
+.case h3 { font-size: 26px; margin: 4px 0 16px; line-height: 1.25; letter-spacing: -0.01em; }
+.case h4 { font-size: 15px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 28px 0 10px; }
+.case p, .case li { max-width: 760px; }
+.case ol, .case ul { padding-left: 22px; }
+.case li { margin-bottom: 8px; }
+.callout { border-left: 3px solid var(--good); background: color-mix(in srgb, var(--good) 8%, transparent); padding: 14px 18px; border-radius: 0 8px 8px 0; font-weight: 500; margin: 0 0 8px; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; margin-top: 8px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+td.n { font-variant-numeric: tabular-nums; font-weight: 600; }
+.diagram { margin: 16px 0 8px; overflow-x: auto; }
+.diagram svg { width: 100%; min-width: 620px; height: auto; display: block; }
+.bars { margin: 12px 0 4px; max-width: 620px; }
+.bar-row { display: grid; grid-template-columns: 110px 1fr 90px; align-items: center; gap: 12px; margin: 8px 0; font-size: 14px; }
+.bar { height: 22px; border-radius: 4px; background: var(--muted); opacity: .5; }
+.bar.new { background: var(--good); opacity: 1; min-width: 4px; }
+
+/* skills */
+.skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 760px) { .skills { grid-template-columns: 1fr; } }
+.skill { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.skill h3 { margin: 0 0 8px; font-size: 16px; }
+.skill p { margin: 0; color: var(--muted); font-size: 15px; }
+
+footer { border-top: 1px solid var(--line); padding: 48px 0 64px; }
+footer h2 { margin-bottom: 12px; }
+.small { color: var(--muted); font-size: 13.5px; margin-top: 32px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top">Mohamed Elsonbaty</a>
+    <ul>
+      <li><a href="#work">Case studies</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="wrap hero" id="top">
+  <div class="eyebrow">Data Analyst · Retail</div>
+  <h1>I turn ERP data into the reports a retail business runs on every day.</h1>
+  <p class="lead">In-house data analyst for a multi-branch retail chain with 100+ stores, a web store and an app. I build the Power BI models, run the company's reporting cycle, and agree every KPI with the business before I build it.</p>
+  <div class="btns">
+    <a class="btn primary" href="#work">See the case studies</a>
+    <a class="btn" href="#contact">Get in touch</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="stat"><b>32</b><span>recurring reports, daily to quarterly</span></div>
+    <div class="stat"><b>24</b><span>Power BI reports on one model</span></div>
+    <div class="stat"><b>99%</b><span>lower daily data-sync cost</span></div>
+    <div class="stat"><b>130K</b><span>lost sales lines recovered</span></div>
+  </div>
+</div>
+
+<section class="wrap" id="work">
+  <h2>Case studies</h2>
+  <p class="sub">Real work, with company names and sales values removed.</p>
+  <div class="cases">
+    <a class="card" href="#case-1">
+      <span class="num">01 · KPI design</span>
+      <h3>One version of the truth for retail sales</h3>
+      <p>Every department counted "sales" differently. I agreed the definitions with management, then built one model for all of them.</p>
+      <span class="result">24 reports, one set of KPIs</span>
+      <div class="tags"><span class="tag">Power BI</span><span class="tag">DAX</span><span class="tag">Data modelling</span></div>
+    </a>
+    <a class="card" href="#case-2">
+      <span class="num">02 · Cost optimisation</span>
+      <h3>Cutting the daily data sync cost by 99%</h3>
+      <p>Reports were slow for everyone on the smallest Fabric capacity. I found where the compute went and rebuilt the sync.</p>
+      <span class="result">~8,200 → ~50 CU-seconds per run</span>
+      <div class="tags"><span class="tag">Microsoft Fabric</span><span class="tag">KQL</span><span class="tag">Python</span></div>
+    </a>
+    <a class="card" href="#case-3">
+      <span class="num">03 · Reporting</span>
+      <h3>Running the company's reporting cycle</h3>
+      <p>32 reports for supervisors, quality, marketing, inventory, HR, training, e-commerce and purchasing.</p>
+      <span class="result">From daily to quarterly, for teams across the business</span>
+      <div class="tags"><span class="tag">Excel</span><span class="tag">Power BI</span><span class="tag">Stakeholders</span></div>
+    </a>
+    <a class="card" href="#case-4">
+      <span class="num">04 · Business logic</span>
+      <h3>Measuring online promotions the ERP never recorded</h3>
+      <p>Online orders carry no promotion tag. I turned the bundle rules into logic that finds offers on each invoice.</p>
+      <span class="result">Reconciles exactly to net online sales</span>
+      <div class="tags"><span class="tag">KQL</span><span class="tag">Reconciliation</span><span class="tag">Data quality</span></div>
+    </a>
+  </div>
+</section>
+
+<section class="wrap">
+
+  <article class="case" id="case-1">
+    <span class="eyebrow">Case study 01</span>
+    <h3>One version of the truth for retail sales</h3>
+    <p class="callout">24 Power BI reports for every department, all fed from one semantic model and one agreed set of KPI definitions.</p>
+
+    <h4>The problem</h4>
+    <p>The business sells through 100+ POS branches, a web store, an app, marketplaces and wholesale arms. Each department reported "sales" differently. Some numbers included shipping fees and some didn't. Online orders shipped from a warehouse branch were missing from budget achievement.</p>
+
+    <h4>What I did</h4>
+    <ol>
+      <li><strong>Agreed the KPI definitions with management before building anything.</strong> Shipping, cash-on-delivery and admin fees are pass-through charges, so they count as neither sales nor discounts. Product discounts and loyalty points do reduce net sales. Online orders shipped from the distribution warehouse count toward that branch's budget.</li>
+      <li><strong>Split sales into the channels the business actually manages:</strong> POS, Online, Marketplace, Direct, and separate wholesale and factory arms, assigned by sales team in a fixed order of priority.</li>
+      <li><strong>Built comparable-period analysis:</strong> last year, like-for-like (same-store) and target achievement, with daily targets by branch and category.</li>
+      <li><strong>Built a returns analysis</strong> by area, month and product. I found barcode scans typed as quantities, up to 500M+ units, that turned the returns total into nonsense, and capped them without changing net sales.</li>
+      <li><strong>Answered a new business question: are new branch managers holding their branches?</strong> Each branch is compared with the same period last year and with the network trend. Branches that didn't exist last year are compared with their own average since opening.</li>
+    </ol>
+
+    <h4>Impact</h4>
+    <ul>
+      <li>Every department reads the same number for the same question.</li>
+      <li>One model holds the full page set (35 pages), and departmental reports reuse it, so a fix is made once.</li>
+    </ul>
+  </article>
+
+  <article class="case" id="case-2">
+    <span class="eyebrow">Case study 02</span>
+    <h3>Cutting the daily data sync cost by 99% on the smallest Fabric capacity</h3>
+    <p class="callout">The nightly ERP sync went from about 8,200 CU-seconds to about 50, and a trivial report query went from a flat 21 seconds to under 1 second.</p>
+
+    <h4>The problem</h4>
+    <p>The whole platform runs on a Microsoft Fabric F2, the smallest capacity: 2 compute units and 3 GB of memory per model. Upgrading was not an option. Every query took about 21 seconds whatever it did. That flat delay is Fabric throttling, not slow DAX.</p>
+
+    <div class="diagram" role="img" aria-label="One daily sync feeds both the Power BI model and the Excel reports">
+      <svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif" font-size="13">
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+        <g fill="none" stroke="var(--muted)" stroke-width="1.25">
+          <path d="M172 58H212" marker-end="url(#arr)"/>
+          <path d="M360 58H400" marker-end="url(#arr)"/>
+          <path d="M548 58H588" marker-end="url(#arr)"/>
+          <path d="M474 86V166" marker-end="url(#arr)"/>
+          <path d="M548 194H588" marker-end="url(#arr)"/>
+        </g>
+        <g stroke="var(--line)" stroke-width="1.25" fill="var(--surface)">
+          <rect x="24" y="30" width="148" height="56" rx="8"/>
+          <rect x="400" y="30" width="148" height="56" rx="8"/>
+          <rect x="588" y="30" width="148" height="56" rx="8"/>
+          <rect x="400" y="166" width="148" height="56" rx="8"/>
+          <rect x="588" y="166" width="148" height="56" rx="8"/>
+        </g>
+        <rect x="212" y="30" width="148" height="56" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+        <g text-anchor="middle" fill="var(--text)" font-weight="600">
+          <text x="98" y="54">Odoo ERP</text>
+          <text x="286" y="54">Python sync</text>
+          <text x="474" y="54">Kusto Eventhouse</text>
+          <text x="662" y="54">Power BI model</text>
+          <text x="474" y="190">Report builders</text>
+          <text x="662" y="190">Excel reports</text>
+        </g>
+        <g text-anchor="middle" fill="var(--muted)" font-size="11.5">
+          <text x="98" y="71">POS, online, stock</text>
+          <text x="286" y="71" fill="var(--text)">daily, ~50 CU-s</text>
+          <text x="474" y="71">KQL functions</text>
+          <text x="662" y="71">hybrid, 24 reports</text>
+          <text x="474" y="207">Python + KQL</text>
+          <text x="662" y="207">daily and monthly</text>
+          <text x="286" y="108">was Spark, ~8,200 CU-s</text>
+        </g>
+      </svg>
+    </div>
+
+    <h4>How I diagnosed it</h4>
+    <ul>
+      <li>Used the Fabric Capacity Metrics app to see which item consumed what, hour by hour.</li>
+      <li>About 60% of all compute was the database staying awake. Anything that queried it kept it awake: the sync, DirectQuery visuals, Desktop refreshes.</li>
+      <li>The Spark sync billed a flat ~8,200 CU-s per run, and its time did not grow with the data. The cost was Spark overhead, not work.</li>
+      <li>Scripted validation queries cost 75 to 400 CU-s each, against 2 to 10 for a normal viewer.</li>
+    </ul>
+
+    <h4>Compute per sync run</h4>
+    <div class="bars">
+      <div class="bar-row"><span>Spark (before)</span><div class="bar" style="width:100%"></div><span>~8,200 CU-s</span></div>
+      <div class="bar-row"><span>Python (after)</span><div class="bar new" style="width:0.6%"></div><span>~50 CU-s</span></div>
+    </div>
+
+    <h4>What I changed</h4>
+    <ol>
+      <li><strong>Rebuilt the sync as a plain Python notebook.</strong> I checked it against Spark on the same 24-hour window, table by table: 30 tables, 51,367 rows identical.</li>
+      <li><strong>Added retry with backoff</strong>, because the capacity accepts one ingest at a time.</li>
+      <li><strong>Moved tables from DirectQuery to Import</strong> (6 DirectQuery tables down to 1), so reports stopped waking the database.</li>
+      <li><strong>Moved automated report reads</strong> from the Power BI service to the database, and turned off Copilot on the capacity.</li>
+      <li><strong>Ran the sync once a day</strong> instead of several times.</li>
+    </ol>
+  </article>
+
+  <article class="case" id="case-3">
+    <span class="eyebrow">Case study 03</span>
+    <h3>Running the company's reporting cycle</h3>
+    <p class="callout">32 scheduled and on-demand reports, from daily to quarterly, for teams across the business.</p>
+
+    <h4>The problem</h4>
+    <p>Every team needs its own view of the same data, on its own schedule. The job is to turn one dataset into the report each team acts on, on time, with numbers that agree across teams.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Frequency</th><th>Reports</th><th>Examples</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr><td>Daily</td><td class="n">1</td><td>Supervisors' daily achievement</td><td>Area supervisors</td></tr>
+          <tr><td>Weekly</td><td class="n">2</td><td>Supervisors' weekly achievement; branches below 80% of target</td><td>Supervisors, sales management</td></tr>
+          <tr><td>Twice a month</td><td class="n">3</td><td>Customer registration rate; quality committee; influencer sales</td><td>Customer service, quality, marketing</td></tr>
+          <tr><td>Monthly</td><td class="n">15</td><td>Branch stock, returns, category target achievement, key products, monthly offers, category deep dives, overtime, stocktake</td><td>Management, category, inventory, HR</td></tr>
+          <tr><td>Quarterly</td><td class="n">4</td><td>Branch and branch-manager achievement; brand and category sales vs stock</td><td>Management, purchasing</td></tr>
+          <tr><td>On demand</td><td class="n">7</td><td>Training impact, planogram impact, vendor sales, e-commerce customer data, supply location</td><td>Training, planogram, marketing, e-commerce, purchasing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Where the value is</h4>
+    <ul>
+      <li><strong>Exception reports, not just totals.</strong> The "below 80% of target" reports tell supervisors which branches and categories to act on first.</li>
+      <li><strong>Sales tied to stock.</strong> Brand and category sales are compared with stock each quarter, so purchasing sees what sells and what sits.</li>
+      <li><strong>Measuring impact.</strong> On-demand reports test whether a team's work, such as training or planogram changes, moved sales.</li>
+    </ul>
+
+    <h4>Next step: automation</h4>
+    <p>Most of these reports are built by hand today. In September 2026 I automated the first two: a daily sales workbook that took 11 minutes by hand, and a monthly report of online products sold below cost. Both matched the manual version cell for cell before I switched over. The rest follow the same way, one report at a time.</p>
+  </article>
+
+  <article class="case" id="case-4">
+    <span class="eyebrow">Case study 04</span>
+    <h3>Measuring online promotions the ERP never recorded</h3>
+    <p class="callout">Online offer performance (bundles sold, value, profit, margin, invoices) is now reported like branch promotions, and the total reconciles exactly with net online sales.</p>
+
+    <h4>The problem</h4>
+    <p>In branches, the POS tags every sale with its promotion. Online orders carry no promotion tag at all, so management couldn't see which online bundles sold or whether they made money.</p>
+
+    <h4>What I did</h4>
+    <ol>
+      <li><strong>Turned the business rule into logic:</strong> an offer counts as sold when every product of an active bundle is on the same invoice.</li>
+      <li><strong>Handled the edge cases.</strong> Bundles sold = the smallest multiple of the required quantities. A product in several matching bundles goes to the biggest one, so nothing is counted twice. Refunds come back as negative rows, so the parts add up exactly to net sales.</li>
+      <li><strong>Stated the limitation:</strong> "any N of these products" offers can't be detected from invoice lines, so they are left out and labelled.</li>
+    </ol>
+
+    <h4>Data quality issues caught along the way</h4>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Issue</th><th>How it showed up</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>A migration silently dropped sales lines for products missing from the product table</td><td>A vendor showed zero sales for 10 days the old system said had 159 units</td><td>Compared with the old system order by order; recovered ~130,000 lines and 11,900 orders</td></tr>
+          <tr><td>163 new HR evaluation forms counted as branch audits</td><td>Audit count jumped when HR created forms in the same module</td><td>Limited audits to the real audit form</td></tr>
+          <tr><td>569 legacy purchase lines had product ids that matched no product</td><td>A vendor showed 15 SKUs instead of 21</td><td>Joined on the SKU code instead</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>
+
+<section class="wrap" id="skills">
+  <h2>Skills</h2>
+  <p class="sub">What I use, and where it shows up above.</p>
+  <div class="skills">
+    <div class="skill"><h3>Business analysis</h3><p>KPI definitions with stakeholders, exception reporting, impact measurement, retail metrics (LY, LFL, targets, returns).</p></div>
+    <div class="skill"><h3>Power BI &amp; Excel</h3><p>Data modelling, DAX, hybrid Import/DirectQuery models, report design, Excel reporting to management formats.</p></div>
+    <div class="skill"><h3>Data platform</h3><p>Microsoft Fabric, Kusto Eventhouse (KQL), Python notebooks, capacity and cost tuning, Odoo ERP data.</p></div>
+  </div>
+</section>
+
+<footer class="wrap" id="contact">
+  <h2>Let's talk</h2>
+  <p class="sub">Open to data analyst and BI roles.</p>
+  <div class="btns">
+    <a class="btn primary" href="mailto:Mohammedelsonbaty2016@gmail.com">Email me</a>
+    <a class="btn" href="https://www.linkedin.com/in/mohamed-elsonbaty-238a991b7">LinkedIn</a>
+    <a class="btn" href="https://github.com/Mohamed-Elsonbaty">GitHub</a>
+  </div>
+  <p class="small">Case studies describe real work with company names, people and sales values removed.</p>
+</footer>
+
+</body>
+</html>
