@@ -112,6 +112,11 @@ td.n { font-variant-numeric: tabular-nums; font-weight: 600; }
 .skill h3 { margin: 0 0 8px; font-size: 16px; }
 .skill p { margin: 0; color: var(--muted); font-size: 15px; }
 
+.card.pbi { margin-bottom: 16px; }
+.card.pbi:hover { border-color: var(--line); }
+.shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+.shots img { width: 100%; height: auto; display: block; border-radius: 8px; border: 1px solid var(--line); }
+@media (max-width: 760px) { .shots { grid-template-columns: 1fr; } }
 footer { border-top: 1px solid var(--line); padding: 48px 0 64px; }
 footer h2 { margin-bottom: 12px; }
 .small { color: var(--muted); font-size: 13.5px; margin-top: 32px; }
@@ -162,6 +167,20 @@ footer h2 { margin-bottom: 12px; }
     </div>
     <span class="btn primary">Open dashboard</span>
   </a>
+  <div class="card pbi">
+    <span class="num">Power BI report · synthetic data</span>
+    <h3>The same analysis, built in Power BI</h3>
+    <p>Star schema with a Date table and 40 DAX measures: last year, like-for-like, target achievement, best and lowest branch. Two pages: an overview, and a branch map that shows who needs attention first.</p>
+    <div class="shots">
+      <a href="powerbi-overview.png"><img src="powerbi-overview.png" alt="Power BI overview page: KPI cards, monthly sales vs last year, area and category tables" loading="lazy"></a>
+      <a href="powerbi-branches.png"><img src="powerbi-branches.png" alt="Power BI branches page: branch map of growth vs target and a table sorted by achievement" loading="lazy"></a>
+    </div>
+    <div class="btns" style="margin-top:16px">
+      <a class="btn primary" href="https://github.com/Mohamed-Elsonbaty/retail-sales-demo">View on GitHub</a>
+      <a class="btn" href="https://github.com/Mohamed-Elsonbaty/retail-sales-demo/raw/main/RetailDemo.pbix">Download .pbix</a>
+    </div>
+    <div class="tags"><span class="tag">Power BI</span><span class="tag">DAX</span><span class="tag">Data modelling</span><span class="tag">TMDL / PBIP</span></div>
+  </div>
 </section>
 
 <section class="wrap" id="work">
